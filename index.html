@@ -6,189 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
     <style>
-        *{
-    background-color: aqua;
-}
-
-.game {
-    background-color: white;
-}
-
-.div {
-    display: flex;
-    justify-content: center;
-}
+    
     </style>
 </head>
 <body>
-    <div class="div">
-        <canvas width="400" height="400" id="game" class="game"></canvas>
-    </div>
+    <form>
+        <label for="formul">Компонент</label>
+        <select name="компоненты" id="form-select">
+            <option value="1">магний оротат</option>
+            <option value="2">карнозит</option>
+            <option value="3">глицин</option>
+            <option value="4">витамин С</option>
+            <option value="5">магний</option>
+            <option value="6">кальций</option>
+            <option value="7">кальций глюконат</option>
+            <option value="8">янтарная кислота</option>
+            <option value="9">липолевая кислота</option>
+            <option value="10">йод</option>
+            <option value="11">Железо</option>
+            <option value="12">Цинк</option>
+            <option value="13">кофеин</option>
+            <option value="14">таурин</option>
+            <option value="15">ацетил-L-карнитин</option>
+            <option value="16">L-лизин</option>
+            <option value="10">Хлорид ионы</option>
+            <option value="10">L-карнитин-тартрат</option>
+            <option value="10">глутаминовая кислота</option>
+            <option value="10">Магний фитоспокоин</option>
+            <option value="10">Медь</option>
+            <option value="10">L-треонин</option>
+        </select>
+    </form>
+    <input id="con" type="text"> Концентрация
+    <br>
+    <input id="mn" type="text"> Навеска
+    <br>
+    <input id="va" type="text"> Объем
+    <br>
+    <input id="mt" type="text"> Масса таблетки
+
     <script>
-        const canvas = document.getElementById('game');
-const context = canvas.getContext('2d');
-let GM = 1;
-const plane=[];
-const snake ={};
-const move=[];
-const nMove=2;
-
-function init(){
-    snake.dx=1;
-    snake.dy=0;
-    snake.x=rand();
-    snake.y=rand();
-    snake.teil=3;
-
-    for (let i=0;i<20;i++) {
-        plane[i]=[];
-        for (let j=0;j<20;j++){
-            plane[i][j]={s:0,e:false};
-        };
-    };
-    plane[snake.x][snake.y].s=snake.teil;
-    createEat();
-};
-init();
-document.addEventListener('keydown', function (event) {
-    if (event.key === "ArrowUp" && move.length<nMove && move[move.length-1]!=0 && GM===2){
-        move.push(0)
-    };
-    if (event.key === "ArrowDown" && move.length<nMove && move[move.length-1]!=1 && GM===2){
-        move.push(1) 
-    };
-    if (event.key === "ArrowLeft" && move.length<nMove && move[move.length-1]!=2 && GM===2){
-        move.push(2) 
-    };
-    if (event.key === "ArrowRight" && move.length<nMove && move[move.length-1]!=3 && GM===2){
-        move.push(3) 
-    };
-});
-
-canvas.addEventListener('mousedown', (e) => {
-    if (GM===1 || GM===3){
-        init();
-        GM=2;
-    };
-});
-
-function rand(){
-    return Math.floor((Math.random()*100)%20);
-}
-
-function createEat() {
-    while (true) {
-        let ex=rand();
-        let ey=rand();
-        // console.log("EAT!");
-        if (!(plane[ex][ey].s>0)) {
-            plane[ex][ey].e=true;
-            break
-        };
-    };
-};
-
-
-function draw() {
-    if (GM===1){
-        //context.fillStyle="#ffffff";
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        context.font = "48px serif";
-        context.fillStyle="#000";
-        context.fillText("Начать игру", 70, 200);
-    }
-    if (GM===2){
-        //context.fillStyle="#ffffff";
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        for (let i=0;i<20;i++) {
-            for (let j=0;j<20;j++ ) {
-                if (plane[i][j].s>0) {
-                    context.fillStyle="#00ff00";
-                    context.fillRect(i*20,j*20,20,20);
-                }
-                else if (plane[i][j].e===true) {
-                    context.fillStyle="#ff0000";
-                    context.fillRect(i*20,j*20,20,20);
-                };
-            };
-        };
-    };
-    if (GM===3){
-        //context.fillStyle="#ffffff";
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        context.font = "48px serif";
-        context.fillStyle="#f00";
-        context.fillText(`Ваш счет: ${snake.teil-3}`, 80, 200);
-        context.fillStyle="#000";
-        context.fillText("Заново", 120, 300);
-    }
-};
-draw();
-
-let count = 0;
-let snakeSpeed = 10;
-function loop() {
-        requestAnimationFrame(loop);
-    
-    if (++count < snakeSpeed) {
-        return;
-    };
-
-    if (GM===2) {
-        let mov = move.shift()
-        if (mov===0 && snake.dy===0){
-            snake.dy=-1;
-            snake.dx=0;
-        };
-        if (mov===1 && snake.dy===0){
-            snake.dy=1;
-            snake.dx=0;
-        };
-        if (mov===2 && snake.dx===0){
-            snake.dx=-1;
-            snake.dy=0;
-        };
-        if (mov===3 && snake.dx===0){
-            snake.dx=1;
-            snake.dy=0;
-        };
-
-        snake.x=(snake.x+snake.dx)%20;
-        snake.y=(snake.y+snake.dy)%20;
-        if (snake.x<0){
-            snake.x=20+snake.x;
-        };
-        if (snake.y<0){
-            snake.y=20+snake.y;
-        }
-        
-        for (let i=0;i<20;i++) {
-            for (let j=0;j<20;j++ ) {
-                if (plane[i][j].s>0) {
-                    plane[i][j].s=plane[i][j].s-1
-                }
-            };
-        };
-
-        if (plane[snake.x][snake.y].e===true) {
-            plane[snake.x][snake.y].e=false;
-            snake.teil+=1;
-            createEat();
-        };
-        if (plane[snake.x][snake.y].s>0) {
-            GM=3
-            return
-        };
-        plane[snake.x][snake.y].s=snake.teil;
-        
-    };
-    draw(); 
-    count=0;
-    
-};
-
-loop();
-
+       
     </script>
 </body>
 </html>

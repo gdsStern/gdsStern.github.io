@@ -2,11 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake</title>
+    <title>Document</title>
     <style>
-    
+       form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+label {
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #333;
+}
+
+select, input[type="text"], textarea {
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    color: #333;
+}
+
+@media (max-width: 350px) {
+    form {
+        max-width: 90%;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -29,12 +81,12 @@
             <option value="14">таурин</option>
             <option value="15">ацетил-L-карнитин</option>
             <option value="16">L-лизин</option>
-            <option value="10">Хлорид ионы</option>
-            <option value="10">L-карнитин-тартрат</option>
-            <option value="10">глутаминовая кислота</option>
-            <option value="10">Магний фитоспокоин</option>
-            <option value="10">Медь</option>
-            <option value="10">L-треонин</option>
+            <option value="17">Хлорид ионы</option>
+            <option value="18">L-карнитин-тартрат</option>
+            <option value="19">глутаминовая кислота</option>
+            <option value="20">Магний фитоспокоин</option>
+            <option value="21">Медь</option>
+            <option value="22">L-треонин</option>
         </select>
     </form>
     <input id="con" type="text"> Концентрация
@@ -45,9 +97,84 @@
     <br>
     <input id="mt" type="text"> Масса таблетки
     <br>
+    <button id="button">Расчитать</button>
+    <br>
     <textarea id="text"></textarea>
+
     <script>
-       
+       let select = document.getElementById("form-select")
+       let con = document.getElementById("con")
+       let mn = document.getElementById("mn")
+       let va = document.getElementById("va")
+       let mt = document.getElementById("mt")
+       let text = document.getElementById("text")
+       let button = document.getElementById("button")
+
+    const formulas = [
+        (V, mt, mn) => ((V - 0.06) * 37.052 * mt) / mn,
+        (V, mt, mn) => (V * 22.62 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 7.507 * mt) / mn,
+        (V, mt, mn) => (V * 8.806 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 2.431 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 4.008 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 4.008 * mt) / (mn * 20),
+        (V, mt, mn) => (V * 5.904 * mt) / mn,
+        (V, mt, mn) => ((V - 0.1) * 20.63 * mt) / mn,
+        (V, mt, mn) => (V * 1.269 * mt) / mn,
+        (V, mt, mn) => (V * 5.5585 * 1.1 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 3.269 * mt) / mn,
+        (V, mt, mn) => ((24.9 - V) * 485.5 * mt) / (mn * 50),
+        (V, mt, mn) => ((V - 0.1) * 12.52 * mt) / mn,
+        (V, mt, mn) => (V * 23.97 * mt) / mn,
+        (V, mt, mn) => (V * 14.62 * mt) / mn,
+        (V, mt, mn) => (V * 3.55 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 16.12 * mt) / mn,
+        (V, mt, mn) => (V * 14.71 * mt) / mn,
+        (V, mt, mn) => (V * 12.16 * mt) / mn,
+        (V, mt, mn) => (V * 15.88 * mt) / mn,
+        (V, mt, mn) => ((V - 0.06) * 11.912 * mt) / mn
+    ];
+
+    const formulasForV = [
+        (C, mt, mn) => (C * mn) / (37.052 * mt) + 0.06,
+        (C, mt, mn) => (C * mn) / (22.62 * mt),
+        (C, mt, mn) => (C * mn) / (7.507 * mt) + 0.06,
+        (C, mt, mn) => (C * mn) / (8.806 * mt),
+        (C, mt, mn) => (C * mn) / (2.431 * mt) + 0.06,
+        (C, mt, mn) => (C * mn) / (4.008 * mt) + 0.06,
+        (C, mt, mn) => (C * mn * 20) / (4.008 * mt) + 0.06,
+        (C, mt, mn) => (C * mn) / (5.904 * mt),
+        (C, mt, mn) => (C * mn) / (20.63 * mt) + 0.1,
+        (C, mt, mn) => (C * mn) / (1.269 * mt),
+        (C, mt, mn) => (C * mn) / (5.5585 * 1.1 * mt),
+        (C, mt, mn) => (C * mn) / (3.269 * mt) + 0.06,
+        (C, mt, mn) => 24.9 - (C * mn * 50) / (485.5 * mt),
+        (C, mt, mn) => (C * mn) / (12.52 * mt) + 0.1,
+        (C, mt, mn) => (C * mn) / (23.97 * mt),
+        (C, mt, mn) => (C * mn) / (14.62 * mt),
+        (C, mt, mn) => (C * mn) / (3.55 * mt),
+        (C, mt, mn) => (C * mn) / (16.12 * mt) + 0.06,
+        (C, mt, mn) => (C * mn) / (14.71 * mt),
+        (C, mt, mn) => (C * mn) / (12.16 * mt),
+        (C, mt, mn) => (C * mn) / (15.88 * mt),
+        (C, mt, mn) => (C * mn) / (11.912 * mt) + 0.06,
+    ];
+
+    
+    function calc() {
+        let mn1 = Math.round((+mn.value + (Math.random() * 2 * 0.005 - 0.005)) * 10000) / 10000;
+        let mn2 = Math.round((+mn.value + (Math.random() * 2 * 0.005 - 0.005)) * 10000) / 10000;
+        let C1 = formulas[select.value-1](va.value,mt.value,mn1)
+        let C2 = 2*con.value - C1
+        // let V2 = formulasForV[select.value-1](C2,mt.value,mn2)
+        let V2 = Math.round(formulasForV[select.value-1](C2,mt.value,mn2) * 100) / 100;
+        let output = `Масса 1: ${mn1}\nМасса 2: ${mn2}\nКонцентрация 1: ${C1}\nКонцентрация 2: ${C2}\nОбъем 2: ${V2}`;
+        text.value = output;
+
+    }
+
+
+        button.addEventListener("click", calc)
     </script>
 </body>
 </html>

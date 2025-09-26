@@ -164,7 +164,7 @@ textarea {
     function calc() {
         let mn1 = Math.round((+mn.value + (Math.random() * 2 * 0.005 - 0.005)) * 10000) / 10000;
         let mn2 = Math.round((+mn.value + (Math.random() * 2 * 0.005 - 0.005)) * 10000) / 10000;
-        let C1 = formulas[select.value-1](va.value,mt.value,mn1)
+        let C1 = Math.round((+con.value + (Math.random() * 2 * 0.5 - 0.5)) * 10000) / 10000;
         let C2 = 2*con.value - C1
         // let V2 = formulasForV[select.value-1](C2,mt.value,mn2)
         let V2 = Math.round(formulasForV[select.value-1](C2,mt.value,mn2) * 100) / 100;

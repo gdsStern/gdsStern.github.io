@@ -93,8 +93,6 @@ textarea {
     <br>
     <input id="mn" type="text"> Навеска
     <br>
-    <input id="va" type="text"> Объем
-    <br>
     <input id="mt" type="text"> Масса таблетки
     <br>
     <button id="button">Расчитать</button>
@@ -168,7 +166,8 @@ textarea {
         let C2 = 2*con.value - C1
         // let V2 = formulasForV[select.value-1](C2,mt.value,mn2)
         let V2 = Math.round(formulasForV[select.value-1](C2,mt.value,mn2) * 100) / 100;
-        let output = `Масса 1: ${mn1}\nМасса 2: ${mn2}\nКонцентрация 1: ${C1}\nКонцентрация 2: ${C2}\nОбъем 2: ${V2}`;
+        let V1 = Math.round(formulasForV[select.value-1](C1,mt.value,mn1) * 100) / 100;
+        let output = `Масса 1: ${mn1}\nМасса 2: ${mn2}\nКонцентрация 1: ${C1}\nКонцентрация 2: ${C2}\nОбъем 1: ${V1}\nОбъем 2: ${V2}`;
         text.value = output;
 
     }
